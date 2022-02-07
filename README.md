@@ -1,2 +1,3 @@
-# chatbot
-Frontend do chatbot em React
+# Chatbot
+
+Projeto Chatbot
