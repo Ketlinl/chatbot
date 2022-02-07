@@ -1,0 +1,29 @@
+# EditorConfig: https://EditorConfig.org
+
+# Caminho principal para o editorConfig
+root = true
+
+# Novas linhas no estilo Unix essa nova linha finaliza todos os arquivos.
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Corresponde a vários arquivos com a notação de extensão entre chaves
+# Setar o charset padrão para js e py
+[*.{js,py}]
+charset = utf-8
+
+# Identação de 4 espaços para python
+[*.py]
+indent_style = space
+indent_size = 4
+
+# Identação de tabulação para arquivos makefile
+[Makefile]
+indent_style = tab
+
+# Identação de 2 espaços para javascript
+[*.js]
+indent_style = space
+indent_size = 2

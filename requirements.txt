@@ -1,3 +1,4 @@
 Django==3.2.11
 ipython==6.2.0
 gunicorn==19.7.1
+flake8==3.7.8

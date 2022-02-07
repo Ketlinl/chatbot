@@ -17,6 +17,6 @@ COPY . /software
 # Expoe a porta 8000 para o mundo externo
 EXPOSE 8000
 # Da permissão de execução no script start.sh
-RUN chmod +x ./start.sh
+RUN chmod +x ./dockers/chatbot/start.sh
 # Executa o script start.sh
-ENTRYPOINT ["./start.sh"]
+ENTRYPOINT ["./dockers/chatbot/start.sh"]

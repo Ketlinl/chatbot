@@ -1,13 +1,13 @@
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-@dfq9o(z1%b93##%vovzr_%d947d$*^181a=#(wnabzusrdhw1'
-
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
+# Configurações de instalação de apps django
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# Configurações de middlewares
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -27,8 +28,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'
-
+# Configurações dos templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -45,8 +45,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
-
+# Configurações do banco de dados
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -54,6 +53,7 @@ DATABASES = {
     }
 }
 
+# Configurações de força da senha
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -69,17 +69,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Configurações de geolocation
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-
+# Configurações de arquivos estáticos
+STATIC_ROOT = os.path.join(BASE_DIR, 'config/staticfiles')
 STATIC_URL = '/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'config/mediafiles')
+MEDIA_URL = '/media/'
 
+# Outras configurações
+SECRET_KEY = 'django-insecure-@dfq9o(z1%b93##%vovzr_%d947d$*^181a=#(wnabzusrdhw1'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+ROOT_URLCONF = 'config.urls'
+WSGI_APPLICATION = 'config.wsgi.application'
