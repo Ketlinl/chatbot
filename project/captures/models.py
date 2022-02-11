@@ -1,4 +1,5 @@
 from django.db import models
+from project.users.models import User
 
 
 class Capture(models.Model):
@@ -23,7 +24,12 @@ class Capture(models.Model):
         error_messages={'unique': 'Email já existe na base de dados.'}
     )
 
-    # user = models.CharField(max_length=15)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Usuário',
+        related_name="captures"
+    )
 
     name = models.CharField(
         "Nome",
