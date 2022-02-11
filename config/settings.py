@@ -15,6 +15,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'project.captures',
+    'project.home',
+    'project.questions',
+    'project.users'
 ]
 
 # Configurações de middlewares
