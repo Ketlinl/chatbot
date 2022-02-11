@@ -1,4 +1,5 @@
 from django.db import models
+from project.users.models import User
 
 
 class Question(models.Model):
@@ -14,7 +15,12 @@ class Question(models.Model):
         error_messages={'unique': 'Código já existe.'}
     )
 
-    # user = models.CharField(max_length=15)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Usuário',
+        related_name="questions"
+    )
 
     is_active = models.BooleanField(
         "Está ativo?",
