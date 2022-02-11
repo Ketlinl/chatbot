@@ -91,3 +91,9 @@ SECRET_KEY = 'django-insecure-@dfq9o(z1%b93##%vovzr_%d947d$*^181a=#(wnabzusrdhw1
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
+
+# Autenticação
+AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = 'users:login'
+LOGOUT_URL = 'users:logout'
+LOGIN_REDIRECT_URL = 'users:profile'
