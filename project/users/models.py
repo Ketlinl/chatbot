@@ -102,5 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         Mais informações
         """
 
+        verbose_name = "Usuário"
+        verbose_name_plural = "Usuários"
         db_table = "users"
         ordering = ('email',)
