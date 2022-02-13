@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Perguntas{% endblock %}
+{% block body %}
+  <div class="container">
+    <h2>{{title}}</h2>
+    <form action="/perguntas/salvar-criacao/" method="POST" name="create-question">
+      {% csrf_token %}
+      <input type="hidden" name="user_id" value="{{user_id}}" />
+      <div class="form-group">
+        <select class="form-control" name="code_relation" id="code_relation">
+          <option value="0">Relação com a resposta anterior</option>
+          {% for selection in all_options %}
+            <option value="{{selection.code}}">{{selection.question}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="question">Pergunta:</label>
+        <input
+          class="form-control"
+          type="text"
+          name="question"
+          id="question"
+          value=""
+        />
+      </div>
+      <div class="form-group">
+        <label for="answer">Resposta:</label>
+        <textarea
+          class="form-control"
+          name="answer"
+          id="answer"
+          rows="5"
+          spellcheck="false"
+        ></textarea>
+      </div>
+      <a href="/perguntas/{{user_id}}/" class="btn btn-secondary" role="button">
+        Cancelar
+      </a>
+      <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+  </div>
+{% endblock %}
+{% block js %}
+  <script>
+    const $codeRelation = document.getElementById("code_relation");
+    $codeRelation.value = "{{question.code_relation}}";
+  </script>
+{% endblock %}
