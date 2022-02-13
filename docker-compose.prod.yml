@@ -1,0 +1,25 @@
+version: '3'
+services:
+  nginx:
+    image: ketlin/chatbot:nginx
+    container_name: chatbot-nginx
+    build:
+      context: .
+      dockerfile: ./dockers/nginx/Dockerfile
+    ports:
+      - "443:8000"
+      - "80:80"
+    volumes:
+      - ./.ignore/nginx:/var/log/nginx
+    depends_on:
+      - chatbot
+
+  chatbot:
+    image: ketlin/chatbot:latest
+    container_name: chatbot
+    build:
+      context: .
+      dockerfile: ./dockers/chatbot/Dockerfile
+    command: "./dockers/chatbot/start.sh"
+    volumes:
+      - .:/software

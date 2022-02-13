@@ -1,7 +1,8 @@
 # Instala um container com o python 3.8
 FROM python:3.8
-# Arrumar o delay dos logs do django
+# Arrumar o delay dos logs do django e colocar o ambiente de PROD
 ENV PYTHONUNBUFFERED 1
+ENV ENVIRONMENT production
 # Instala dependencias do sistema operacional
 RUN apt-get update && apt-get install -y vim && pip3 install --upgrade pip
 # Cria a pasta software no container

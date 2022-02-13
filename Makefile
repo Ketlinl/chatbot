@@ -69,6 +69,10 @@ logs:
 	# Visualiza os logs
 	docker-compose logs -f -t ${container}
 
+prod:
+	# Sobe a aplicação em produção
+	docker-compose -f docker-compose.prod.yml up
+
 
 # OUTROS --------------------------------------------------
 
