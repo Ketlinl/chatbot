@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+  <link rel="stylesheet" href="{% static 'balloons.css' %}" />
+{% endblock %}
+{% block body %}
+  <nav class="navbar navbar-expand-sm bg-info">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a href="#" class="nav-link text-white">
+          <span class="dot"></span>&nbsp;Chatbot está online
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <br />
+  <div>
+    <div style="overflow-y: scroll; height: 300px; width: 100%;" align="center" id="msg">
+      <div class="talk-bubble tri-right left-top" style="width: 90%; background-color: #00AABB;">
+        <div class="talktext">
+          <p>Olá! Em que posso ajudar?</p>
+        </div>
+      </div>
+    </div>
+    <input
+      type="text"
+      id="input"
+      class="form-control"
+      onkeypress="return Send(event)"
+      placeholder="Digite a sua mensagem e tecle Enter..."
+    />
+    <input type="hidden" id="user_id" value="{{user_id}}" />
+    <input type="hidden" id="code_before" value="0" />
+  </div>
+{% endblock %}
+{% block js %}
+  <script src="{% static 'chatbot.js' %}"></script>
+{% endblock %}

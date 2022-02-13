@@ -22,13 +22,17 @@ class Question(models.Model):
         related_name="questions"
     )
 
+    code_relation = models.CharField(
+        "Código relacionado",
+        help_text="Código usado para identificar respostas relacionadas",
+        max_length=15
+    )
+
     is_active = models.BooleanField(
         "Está ativo?",
         help_text="Verifica se a questão está ativo no sistema.",
         default=False
     )
-
-    # answer_relation = models.CharField(max_length=15)
 
     question = models.CharField(max_length=500)
 
