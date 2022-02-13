@@ -8,20 +8,10 @@ class Capture(models.Model):
     digitar no chatbot.
     """
 
-    code = models.CharField(
-        'Código',
-        help_text="Código único de identificação da captura.",
-        max_length=50,
-        unique=True,
-        error_messages={'unique': 'Código já existe.'}
-    )
-
     email = models.EmailField(
         "Email",
-        help_text="Email único do usuário capturado.",
-        max_length=50,
-        unique=True,
-        error_messages={'unique': 'Email já existe na base de dados.'}
+        help_text="Email do usuário capturado.",
+        max_length=50
     )
 
     user = models.ForeignKey(
@@ -46,18 +36,19 @@ class Capture(models.Model):
     document = models.CharField(
         "CPF/CNPJ",
         help_text="Documento capturado do usuário, pode ser CPF ou CNPJ.",
-        max_length=25
+        max_length=25,
+        blank=True
     )
 
     age = models.IntegerField(
         "Idade",
         help_text="Idade capturada do usuário.",
-        null=True
+        default=0, blank=True, null=True
     )
 
     sex = models.CharField(
         "Sexo",
-        help_text="Captura o sexo de uma pessoa. Ex: M ou F",
+        help_text="Captura o sexo de uma pessoa.",
         choices=(("M", "Masculino"), ("F", "Feminino")),
         max_length=1,
         blank=True
@@ -66,7 +57,8 @@ class Capture(models.Model):
     cep = models.CharField(
         "CEP",
         help_text="Captura do CEP do usuário",
-        max_length=10
+        max_length=10,
+        blank=True
     )
 
     state = models.CharField(
@@ -127,8 +119,10 @@ class Capture(models.Model):
         Representação da modelo
         """
 
-        return self.code
+        return self.email
 
     class Meta:
+        verbose_name = "Captura"
+        verbose_name_plural = "Capturas"
         db_table = "captures"
         ordering = ('created_at',)

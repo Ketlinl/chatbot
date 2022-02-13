@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
 )
+import random
+import string
 
 
 class UserProfileManager(BaseUserManager):
@@ -22,7 +24,7 @@ class UserProfileManager(BaseUserManager):
         user = self.model(email=email, name=name)
 
         user.set_password(password)
-
+        user.is_staff = True
         user.save(using=self._db)
 
         return user
@@ -36,7 +38,7 @@ class UserProfileManager(BaseUserManager):
 
         user.is_superuser = True
         user.is_staff = True
-
+        user.protocol = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
         user.save(using=self._db)
 
         return user
@@ -46,6 +48,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     Cria um usuário de autenticação no sistema.
     """
+
+    protocol = models.CharField(
+        "protocolo",
+        help_text="Protocolo do chatbot do usuário",
+        unique=True,
+        error_messages={'unique': "Protocolo já existe."},
+        max_length=25
+    )
 
     email = models.EmailField(
         'E-mail',

@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.db.models import Q
 from .forms import UserCreationForm, UserForm
 from .models import User
+import random
+import string
 
 
 class GroupAdmin(BaseGroupAdmin):
@@ -40,7 +42,7 @@ class UserAdmin(BaseUserAdmin):
 
     add_fieldsets = ((None, {'fields': ('email', 'name', 'password1', 'password2')}),)
 
-    list_display = ('name', 'email', 'is_active', 'is_staff', 'is_superuser', 'created_at')
+    list_display = ('name', 'email', 'protocol', 'is_active', 'is_staff', 'is_superuser', 'created_at')
 
     search_fields = ('name', 'email')
 
@@ -64,13 +66,22 @@ class UserAdmin(BaseUserAdmin):
             fieldsets = (
                 (None, {'fields': ('email', 'name')}),
                 ('PERMISSÕES', {
-                    'fields': ('is_active', 'is_staff', 'groups'),
+                    'fields': ('is_active', 'groups'),
                     'description': 'Sistema de permissões do usuário.',
                     'classes': ('extrapretty', 'collapse', 'in')
                 })
             )
 
         return fieldsets
+
+    def save_model(self, request, obj, form, change):
+        """
+        Salva a modelo no banco de dados.
+        """
+
+        obj.protocol = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        obj.is_staff = True
+        super().save_model(request, obj, form, change)
 
     def get_ordering(self, request):
         """

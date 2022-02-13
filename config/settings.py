@@ -95,6 +95,3 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Autenticação
 AUTH_USER_MODEL = 'users.User'
-LOGIN_URL = 'users:login'
-LOGOUT_URL = 'users:logout'
-LOGIN_REDIRECT_URL = 'questions:list'

@@ -7,14 +7,6 @@ class Question(models.Model):
     Cadastra as perguntas e respostas
     """
 
-    code = models.CharField(
-        'Código',
-        help_text="Código único de identificação da questão.",
-        max_length=50,
-        unique=True,
-        error_messages={'unique': 'Código já existe.'}
-    )
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -34,9 +26,17 @@ class Question(models.Model):
         default=False
     )
 
-    question = models.CharField(max_length=500)
+    body = models.CharField(
+        "Questão",
+        help_text="Enunciado da questão",
+        max_length=500
+    )
 
-    answer = models.CharField(max_length=500)
+    answer = models.CharField(
+        "Resposta",
+        help_text="Resposta para essa questão",
+        max_length=500
+    )
 
     created_at = models.DateTimeField(
         'Criado em',
@@ -55,8 +55,10 @@ class Question(models.Model):
         Representação da modelo
         """
 
-        return self.question
+        return self.body
 
     class Meta:
+        verbose_name = "Questão"
+        verbose_name_plural = "Questões"
         db_table = "questions"
         ordering = ('created_at',)
