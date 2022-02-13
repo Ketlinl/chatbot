@@ -2,7 +2,7 @@
 {% block title %}Perguntas{% endblock %}
 {% block body %}
 <div class="container">
-  <h2>{{title}}</h2>
+  <h2>Listagem de perguntas</h2>
   <div style="overflow-y: scroll; height: 410px; width: 100%;" align="center">
     <table class="table">
       <thead>
@@ -28,7 +28,7 @@
           </tr>
         {% empty %}
           <tr>
-            <td colspan="12">Não foi adicionado nenhuma pergunta até o momento.</td>
+            <td colspan="3">Não foi adicionado nenhuma pergunta até o momento.</td>
           </tr>
         {% endfor %}
       </tbody>

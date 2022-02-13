@@ -1,8 +1,10 @@
 from django.urls import path
 from project.questions import views
 
+app_name = 'questions'
+
 urlpatterns = [
-    # path("<int:user_id>/", views.questions)
+    path("", views.QuestionsView.as_view(), name="list")
     # path("pergunta/<int:id>/", views.question)
     # path("<int:user_id>/criar-pergunta/", views.create_question)
     # path("salvar-criacao/", views.save_creation)

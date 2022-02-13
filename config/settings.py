@@ -3,7 +3,8 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DEBUG = False
+
+DEBUG = os.environ.get("ENVIRONMENT", "development") == "development"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -96,4 +97,4 @@ WSGI_APPLICATION = 'config.wsgi.application'
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = 'users:login'
 LOGOUT_URL = 'users:logout'
-LOGIN_REDIRECT_URL = 'users:profile'
+LOGIN_REDIRECT_URL = 'questions:list'
