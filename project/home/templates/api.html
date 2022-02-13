@@ -1,14 +1,9 @@
-{% extends "base.html" %}
-{% block title %}API de Integração{% endblock %}
-
-{% block body %}
-  <div class="container">
-    <h2>{{title}}</h2>
-    <p>Copie e cole o código abaixo dentro da tag body do seu aplicativo WEB.</p>
-    <textarea class="form-control" rows="10" spellcheck="false">
-      <a href="#" onclick="window.open('http://localhost/perguntas/{{user_id}}/chatbot/', '', 'width=410,height=450');">
-        Chatbot
-      </a>
-    </textarea>
-  </div>
-{% endblock %}
+<div class="container">
+  <h2>API de Integração</h2>
+  <p>Copie e cole o código abaixo dentro da tag body do seu aplicativo WEB.</p>
+  <textarea class="form-control" rows="10" spellcheck="false">
+    <a href="#" onclick="window.open('http://localhost/perguntas/{{user_id}}/chatbot/', '', 'width=410,height=450');">
+      Chatbot
+    </a>
+  </textarea>
+</div>

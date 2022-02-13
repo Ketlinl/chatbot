@@ -16,9 +16,9 @@ function makeQuestion() {
   questionSended = questionSended.replace(/[^a-zA-Z0-9@,.;:!-\s]/g, '');
 
   const $msg = document.getElementById("msg");
-  const $userId = document.getElementById("user_id");
+  const $protocol = document.getElementById("protocol");
   const $codeBefore = document.getElementById("code_before");
-  const userId = Number($userId.value);
+  const protocol = Number($protocol.value);
   const codeBefore = Number($codeBefore.value);
 
   // Remove o link para rolar o scroll para o final de forma automática
@@ -28,7 +28,7 @@ function makeQuestion() {
   // Abre uma conexão HTTP
   const http = new XMLHttpRequest();
   const async = true;
-  http.open('GET', `/perguntas/${userId}/answer/${codeBefore}/${questionSended}/`, async);
+  http.open('GET', `/perguntas/${protocol}/answer/${codeBefore}/${questionSended}/`, async);
   http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   // Executa na conclusão do envio da requisição.
   http.onreadystatechange = function() {

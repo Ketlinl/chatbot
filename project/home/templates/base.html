@@ -8,36 +8,6 @@
     {% block css %}{% endblock %}
   </head>
   <body>
-    {% block nav %}
-      <nav class="navbar navbar-expand-sm bg-dark">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/perguntas/{{user_id}}">Cadastro</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" onclick="window.open('http://localhost/perguntas/{{user_id}}/chatbot/', '', 'width=410,height=450');">
-              Chatbot
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/perguntas/{{user_id}}/criar-pergunta/">Criar Pergunta</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/capturas/{{user_id}}/">Capturas</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/perguntas/{{user_id}}/api/">API</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout/">Sair</a>
-          </li>
-        </ul>
-      </nav>
-    {% endblock %}
-
     {% block body %}{% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

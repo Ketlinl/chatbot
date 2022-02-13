@@ -129,4 +129,4 @@ admin.site.register(User, UserAdmin)
 admin.site.site_header = "Chatbot Theo"
 admin.site.site_title = "Parte Administrativa"
 admin.site.index_title = "Bem vindo a parte administrativa do chatbot Theo"
-admin.site.site_url = '/login/'
+admin.site.site_url = '/'
