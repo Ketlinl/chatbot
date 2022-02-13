@@ -54,7 +54,7 @@ class Capture(models.Model):
         blank=True
     )
 
-    cep = models.CharField(
+    zip_code = models.CharField(
         "CEP",
         help_text="Captura do CEP do usuário",
         max_length=10,

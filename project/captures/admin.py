@@ -7,9 +7,15 @@ class CaptureAdmin(admin.ModelAdmin):
     Gerenciamento de capturas.
     """
 
-    fields = ('email', 'name', 'phone', 'document', 'age', 'sex', 'cep')
+    fieldsets = (
+        (None, {'fields': ('email', 'name', 'phone', 'document', 'age', 'sex')}),
+        ('ENDEREÇO', {
+            'fields': ('zip_code', 'state', 'city', 'neighborhood', 'address', 'number'),
+            'classes': ('extrapretty', 'collapse', 'in')
+        })
+    )
 
-    list_display = ('email', 'name', 'phone', 'document', 'age', 'sex', 'cep')
+    list_display = ('email', 'name', 'phone', 'document', 'age', 'sex', 'zip_code')
 
     search_fields = ('email', 'name', 'phone', 'document')
 
