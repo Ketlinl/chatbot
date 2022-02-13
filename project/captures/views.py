@@ -1,19 +1,25 @@
-from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from django.contrib.auth import get_user_model
 from .models import Capture
 
+User = get_user_model()
 
-def captures(request, user_id):
+
+class CapturesView(LoginRequiredMixin, TemplateView):
     """
-    View de capturas de dados.
+    Listagem de questões
     """
 
-    captures = Capture.objects.filter(user__id=user_id)
+    model = User
+    template_name = 'captures.html'
+    context_object_name = 'user'
 
-    return render(
-        request,
-        template_name="captures.html",
-        context={
-            "user_id": user_id,
-            "captures": captures
-        }
-    )
+    def get_context_data(self, **kwargs):
+        """
+        Insere novos contextos no template.
+        """
+
+        context = super(CapturesView, self).get_context_data(**kwargs)
+        context['captures'] = Capture.objects.filter(user=self.request.user)
+        return context
