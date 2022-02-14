@@ -28,7 +28,7 @@ function makeQuestion() {
   // Abre uma conexão HTTP
   const http = new XMLHttpRequest();
   const async = true;
-  http.open('GET', `/perguntas/${protocol}/answer/${codeBefore}/${questionSended}/`, async);
+  http.open('GET', `/questao/${protocol}/answer/${codeBefore}/${questionSended}/`, async);
   http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   // Executa na conclusão do envio da requisição.
   http.onreadystatechange = function() {
@@ -66,7 +66,7 @@ function makeQuestion() {
     }
   }
   // Envia a requisição
-  http.Send();
+  http.send();
 }
 // No carregamento da página de um scroll até a última msg com foco no input.
 window.location.href = '#end';
