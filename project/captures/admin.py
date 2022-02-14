@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Capture
+from ..utils import zip_code_request
 import re as regex
-import buscacep
 
 
 class CaptureAdmin(admin.ModelAdmin):
@@ -32,28 +32,23 @@ class CaptureAdmin(admin.ModelAdmin):
 
         obj.user = request.user
 
-        if obj.zip_code:
-            try:
-                response = buscacep.busca_cep_correios(obj.zip_code)
-            except:
-                response = None
+        address = zip_code_request(obj.zip_code)
 
-            print(response)
-            if response:
-                if not obj.state:
-                    obj.state = response.localidade[response.localidade.index("/"):].replace("/", "").strip()
+        if address:
+            if not obj.state:
+                obj.state = address['state']
 
-                if not obj.city:
-                    obj.city = response.localidade[:response.localidade.index("/")].strip()
+            if not obj.city:
+                obj.city = address['city']
 
-                if not obj.neighborhood:
-                    obj.neighborhood = response.bairro.strip()
+            if not obj.neighborhood:
+                obj.neighborhood = address['neighborhood']
 
-                if not obj.address:
-                    obj.address = response.logradouro.strip()
+            if not obj.address:
+                obj.address = address['address']
 
-                if not obj.number:
-                    obj.number = regex.sub('[0-9/]', '', response.logradouro)
+            if not obj.complement:
+                obj.complement = address['complement']
 
         super().save_model(request, obj, form, change)
 

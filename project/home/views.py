@@ -3,9 +3,9 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from ..questions.models import Question
 from ..captures.models import Capture
+from ..utils import zip_code_request
 from validate_docbr import CPF, CNPJ
 from unidecode import unidecode
-import buscacep
 import re as regex
 import os
 
@@ -128,11 +128,6 @@ def nlk_process(request, protocol, code_before, question):
     document = ""
     phone = ""
     zip_code = ""
-    state = ""
-    city = ""
-    neighborhood = ""
-    address = ""
-    number = ""
     tokens = lower_question.split(" ")
     for token in tokens:
         # Captura da informação do nome e email
@@ -171,20 +166,9 @@ def nlk_process(request, protocol, code_before, question):
                     phone = parts.strip()
 
         # Captura do CEP e pegar o endereço pelos correios
+        address = {}
         if len(parts) == 8:
-            try:
-                response = buscacep.busca_cep_correios(parts)
-            except:
-                response = None
-
-            print(response)
-            if response:
-                zip_code = parts.strip()
-                state = response.localidade[response.localidade.index("/"):].replace("/", "").strip()
-                city = response.localidade[:response.localidade.index("/")].strip()
-                neighborhood = response.bairro.strip()
-                address = response.logradouro.strip()
-                number = regex.sub('[0-9/]', '', response.logradouro)
+            address = zip_code_request(parts)
 
     # Armazenar os resultados da captura
     if any([age, sex, email, name, document, phone, zip_code]):
@@ -197,11 +181,7 @@ def nlk_process(request, protocol, code_before, question):
             document=document,
             phone=phone,
             zip_code=zip_code,
-            state=state.upper(),
-            city=city,
-            neighborhood=neighborhood,
-            address=address,
-            number=number,
+            **address
         )
 
         results.append({

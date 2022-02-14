@@ -96,6 +96,13 @@ class Capture(models.Model):
         blank=True
     )
 
+    complement = models.CharField(
+        "Complemento",
+        help_text="Complemento do endereço",
+        max_length=100,
+        blank=True
+    )
+
     is_active = models.BooleanField(
         "Está ativo?",
         help_text="Verifica se o usuário capturado está ativo no sistema.",
