@@ -25,7 +25,7 @@ class Question(models.Model):
     is_active = models.BooleanField(
         "Está ativo?",
         help_text="Verifica se a questão está ativo no sistema.",
-        default=False
+        default=True
     )
 
     body = models.CharField(
