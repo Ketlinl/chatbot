@@ -22,7 +22,7 @@ def home(request):
     if env == "development":
         host = "localhost:8000"
     else:
-        host = "localhost"
+        host = "chatbot.vwapp.com.br"
 
     user = User.objects.filter(is_superuser=True, is_staff=True).last()
 
@@ -76,17 +76,20 @@ def nlk_process(request, protocol, code_before, question):
 
     # Realiza o filtro das questões cadastradas
     if code_before > 0:
+        # Se existir uma pergunta relacionada anterior a essa pegue a próxima pergunta do fluxo.
         queryset = Question.objects.filter(
             user__protocol=protocol,
             code_relation=code_before,
             is_active=True
         )
 
+        # Caso não ache provavelmente é uma pergunta que não tem relação com as outras.
         if len(queryset) <= 0:
             queryset = Question.objects.filter(
                 user__protocol=protocol,
                 is_active=True
             )
+    # Pega a nova pergunta
     else:
         queryset = Question.objects.filter(
             user__protocol=protocol,
@@ -104,19 +107,19 @@ def nlk_process(request, protocol, code_before, question):
         # Caso não tenha passado o anos na resposta vamos quebrar a resposta em pedaços
         tokens = lower_question.split(' ')
         # Percorrer esses pedaços
-        for token in tokes:
+        for token in tokens:
             # Por regex extrai o que tiver número
             parts = regex.sub('[^0-9]', '', token)
-            # Se o número estiver entre 0 e 99 então armazene
+            # Se o número estiver entre 1 e 99 então armazene
             if len(parts) >= 1 and len(parts) <= 3:
                 age = int(parts)
 
     # Captura da informação de sexo
     sex = ""
     temp = lower_question.replace(",", "").replace(".", "").replace(";", "").replace("!", "")
-    if temp in [" m ", "masculino"]:
+    if " m " in temp or "masculino" in temp:
         sex = "M"
-    elif temp in [" f ", "feminino"]:
+    elif " f " in temp or "feminino" in temp:
         sex = "F"
 
     # Captura de informações
@@ -135,7 +138,7 @@ def nlk_process(request, protocol, code_before, question):
         # Captura da informação do nome e email
         if "@" in token and "." in token:
             email = token.strip()
-            # Verifica se o usuário encerrou a centensa com um ponto final
+            # Verifica se o usuário encerrou a sentença com um ponto final
             if email[-1] == '.':
                 email = email[0:-1]
             # Limpa o email de possíveis caracteres indesejados.
@@ -190,7 +193,7 @@ def nlk_process(request, protocol, code_before, question):
             age=age,
             sex=sex,
             email=email,
-            name=name,
+            name=name.upper(),
             document=document,
             phone=phone,
             zip_code=zip_code,
@@ -202,12 +205,12 @@ def nlk_process(request, protocol, code_before, question):
         )
 
         results.append({
-            "current_code": 0,
+            "current_code": 0,  # usa
             "protocol": protocol,
             "code_before": code_before,
             "question": question,
             "input": question,
-            "output": "Ok, entendi"
+            "output": "Ok, entendi"  # usa
         })
     # Controle de abreviações
     else:
@@ -231,6 +234,7 @@ def nlk_process(request, protocol, code_before, question):
                 "input": question,
                 "output": "Desculpe, mas não sei informar."
             })
+        # Se as respostas para a pergunta foi encontrada armazene todas elas
         else:
             for query in queryset:
                 results.append({
@@ -242,13 +246,15 @@ def nlk_process(request, protocol, code_before, question):
                     "output": query.answer
                 })
 
+        # Abaixo vamos mapear a melhor resposta para a pergunta inserida pelo usuário
         # Remove acentuação e espaços
         question_received = unidecode(question)
-        question_received.replace("?", "")
+        question_received = question_received.replace("?", "")
         question_received = question_received.strip()
         # Coloca em minúscula
         question_received = question_received.lower()
         # Elimina as 3 ultimas letras de cada palavra com tokenização
+        # Para desconsiderar o tempo verbal de cada palavra
         temp = question_received.split(" ")
         temp_list = []
         for x in temp:
@@ -257,13 +263,15 @@ def nlk_process(request, protocol, code_before, question):
             else:
                 temp_list.append(x)
         question_received = ' '.join(temp_list)
-        # Percorrer a lista de registros encontrados
+
+        # Percorrer a lista de registros encontrados, no caso as perguntas cadastradas
+        # no banco de dados
         equals = 0
         code = ""
         for x in results:
             # Removor acentuação e espaços
             question_found = unidecode(x['question'])
-            question_found.replace("?", "")
+            question_found = question_found.replace("?", "")
             question_found = question_found.strip()
             # Coloca em minuscula
             question_found = question_found.lower()
@@ -276,10 +284,12 @@ def nlk_process(request, protocol, code_before, question):
                 else:
                     temp_list.append(y)
             question_found = ' '.join(temp_list)
+
             # Criar uma lista para a questão recebida e uma para a questão encontrada
             question_received_list = question_received.split(" ")
             question_found_list = question_found.split(" ")
             # Conta as palavras recebidas que coincidem com as palavras de cada questão encontrada
+            # E armazenar o id da resposta com a maior quantidade de tokens semelhantes
             qtd = 0
             for y in question_received_list:
                 if y in question_found_list:
