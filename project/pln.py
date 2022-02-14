@@ -32,11 +32,6 @@ class PLN:
         try:
             user = User.objects.get(protocol=self.protocol)
         except User.DoesNotExist:
-            self.results.append({
-                "current_code": 0,
-                "input": "",
-                "output": "Desculpe, ocorreu algum problema interno, contate o meu desenvolvedor por favor."
-            })
             return None
 
         return user
@@ -57,9 +52,10 @@ class PLN:
         """
 
         question = None
-        if self.input_before_id:
+        if self.input_before_id > 0:
             question = Question.objects.filter(id=self.input_before_id).last()
 
+        print(self.input_before_id, question)
         # Se existir uma pergunta anterior relacionada
         if question:
             # Pegue a questão que esteja relacionado a entrada anterior, caso exista.
@@ -68,6 +64,7 @@ class PLN:
                 input_before=question,
                 is_active=True
             )
+            print(queryset)
 
             # Caso não ache provavelmente é uma pergunta que não tem relação com as outras.
             if len(queryset) <= 0:
@@ -210,29 +207,36 @@ class PLN:
 
         return temp
 
+    def __remove_commom_expression(self, current_input):
+        """
+        Remove as expressões comuns que tem em quase todas as perguntas.
+        """
+
+        temp = current_input.replace(" que ", "")
+        temp = temp.replace("quem ", "")
+        return temp
+
     def __populate_question_found(self, queryset):
         """
         Pega todas as perguntas encontradas para realizar a
         inteligencia do algoritmo.
         """
 
-        print(queryset)
-
-        # Se não for encontrado nenhuma resposta para a pergunta inserida.
-        if len(queryset) <= 0:
-            self.results.append({
-                "current_code": 0,
-                "input": "",
-                "output": "Desculpe, essa informação eu não sei te responder."
-            })
-        # Se as respostas relacionadas a pergunta for encontrada armazene todas elas
-        else:
+        results = []
+        if len(queryset) > 0:
             for query in queryset:
-                self.results.append({
-                    "current_code": query.id,
+                results.append({
+                    "question_id": query.id,
                     "input": query.body,
                     "output": query.answer
                 })
+
+            return results
+
+        return {
+            "question_id": 0,
+            "output": "Desculpe, essa informação eu não sei te responder ainda."
+        }
 
     def __input_treatment(self, current_input):
         """
@@ -288,10 +292,16 @@ class PLN:
         Pega o resultado do processamento.
         """
 
-        self.results = []
+        print("############################")
+
         user = self.__get_user_by_chatbot_protocol()
         if not user:
-            return self.results
+            return {
+                "question_id": 0,
+                "output": "Chatbot desativado, contate o administrador dele."
+            }
+
+        print(self.input, self.input_before_id, self.protocol)
 
         current_input = self.__format_input()
         queryset = self.__get_stored_sentences()
@@ -305,7 +315,10 @@ class PLN:
             phone = self.__capture_phone(document, number, token)
             address = self.__capture_address(number, token)
 
+        # print(age, sex, email, name, document, phone, number, address)
+
         if any([age, sex, email, name, document, phone, address]):
+            print("ENTREIII CAPTURA")
             capture = Capture.objects.create(
                 user=user,
                 age=age,
@@ -317,23 +330,33 @@ class PLN:
                 **address
             )
 
-            self.results.append({
-                "current_code": 0,
-                "input": "",
-                "output": "Anotado."
-            })
+            return {
+                "question_id": 0,
+                "output": "Anotado, muito obrigado."
+            }
         else:
             current_input = self.__abbreviation_control(current_input)
-            self.__populate_question_found(queryset)
+            # current_input = self.__remove_commom_expression(current_input)
+            questions = self.__populate_question_found(queryset)
+            if type(questions) == dict:
+                return questions
+
             input_received = self.__input_treatment(current_input)
 
             equals = 0
-            code = ""
-            for result in self.results:
-                question_found = self.__answer_treatment(result)
+            result = {
+                "question_id": 0,
+                "output": "Desculpe, essa informação eu não sei te responder ainda."
+            }
+
+            for question in questions:
+                question_found = self.__answer_treatment(question)
+                print(f"Questão: {question_found}, Questão recebida {input_received}")
                 # Criar uma lista para a questão recebida e uma para a questão encontrada
                 question_received_list = input_received.split(" ")
+                print(question_received_list)
                 question_found_list = question_found.split(" ")
+                print(question_found_list)
                 # Conta as palavras recebidas que coincidem com as palavras de cada questão encontrada
                 # E armazenar o id da resposta com a maior quantidade de tokens semelhantes
                 qtd = 0
@@ -341,15 +364,15 @@ class PLN:
                     if _ in question_found_list:
                         qtd += 1
 
-                if qtd >= equals:
+                print(f"qtd: {qtd}, equals: {equals}")
+
+                if qtd > 0 and qtd >= equals:
+                    print(f"ENTREI: {question}")
                     equals = qtd
-                    code = result['current_code']
+                    result['question_id'] = question['question_id']
+                    result['output'] = question['output']
 
-            # Deixa na lista somente a resposta correspondente
-            corresponding = []
-            for result in self.results:
-                if code == result['current_code']:
-                    corresponding.append(result)
-                    break
+                print(f"Resultado: {result}")
+            print("############################")
 
-            return corresponding
+            return result

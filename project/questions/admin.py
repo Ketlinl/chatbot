@@ -12,9 +12,9 @@ class QuestionAdmin(admin.ModelAdmin):
 
     fields = ('input_before', 'body', 'answer', 'is_active')
 
-    list_display = ('body', 'answer', 'input_before', 'is_active')
+    list_display = ('body', 'answer', 'input_before', 'is_active', 'id')
 
-    search_fields = ('body', 'answer')
+    search_fields = ('id', 'body', 'answer')
 
     list_filter = ('is_active', 'created_at', 'input_before')
 

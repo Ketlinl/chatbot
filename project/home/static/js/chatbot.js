@@ -20,6 +20,7 @@ function makeQuestion() {
   const $inputBefore = document.getElementById("input_before_id");
   const protocol = $protocol.value;
   const inputBeforeId = Number($inputBefore.value);
+  console.log(inputBeforeId);
 
   // Remove o link para rolar o scroll para o final de forma automática
   let msgLines = $msg.innerHTML;
@@ -27,8 +28,8 @@ function makeQuestion() {
 
   // Abre uma conexão HTTP
   const http = new XMLHttpRequest();
-  const async = true;
-  http.open('GET', `/questao/${protocol}/answer/${inputBeforeId}/${questionSended}/`, async);
+  const request_async = true;
+  http.open('GET', `/questao/${protocol}/answer/${inputBeforeId}/${questionSended}/`, request_async);
   http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   // Executa na conclusão do envio da requisição.
   http.onreadystatechange = function() {
@@ -36,11 +37,12 @@ function makeQuestion() {
     if (this.readyState == XMLHttpRequest.DONE && this.status === 200) {
       // Pega o objeto json da nossa view python
       let objJSON = JSON.parse(http.responseText);
+      console.log(objJSON);
       // Se existir conteudo pegue a pergunta (input) e a resposta (output) e insira no html do chatbot.
-      if (objJSON.length > 0) {
-        $inputBefore.value = objJSON[0].current_code;
+      if (objJSON) {
         const input = question;
-        const output = objJSON[0].output.toString().trim();
+        $inputBefore.value = objJSON.question_id;
+        const output = objJSON.output.toString().trim();
         msgLines += `
           <div class="talk-bubble tri-right right-top" style="width: 90%; background-color: #8000FF;">
             <div class="talktext">
