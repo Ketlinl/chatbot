@@ -10,13 +10,13 @@ class QuestionAdmin(admin.ModelAdmin):
 
     form = QuestionForm
 
-    fields = ('body', 'answer', 'is_active')
+    fields = ('input_before', 'body', 'answer', 'is_active')
 
-    list_display = ('body', 'answer', 'is_active')
+    list_display = ('body', 'answer', 'input_before', 'is_active')
 
     search_fields = ('body', 'answer')
 
-    list_filter = ('is_active', 'created_at')
+    list_filter = ('is_active', 'created_at', 'input_before')
 
     ordering = ('body',)
 

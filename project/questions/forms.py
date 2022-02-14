@@ -9,10 +9,10 @@ class QuestionForm(forms.ModelForm):
     """
 
     body = forms.CharField(
-        label="Questão",
+        label="Entrada",
         required=True,
-        help_text="Corpo da questão",
-        error_messages={'required': "O corpo da questão é obrigatório."},
+        help_text="Entrada do usuário",
+        error_messages={'required': "A entrada é obrigatório."},
         widget=forms.Textarea(attrs={'rows': 10, 'cols': '100%'})
     )
 
@@ -26,4 +26,4 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ('body', 'answer', 'is_active')
+        fields = ('input_before', 'body', 'answer', 'is_active')

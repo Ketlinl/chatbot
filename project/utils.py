@@ -16,6 +16,7 @@ def zip_code_request(zip_code):
 
         if response:
             return {
+                "zip_code": response.get('cep'),
                 "state": response.get('uf'),
                 "city": response.get('localidade'),
                 "neighborhood": response.get('bairro'),

@@ -14,10 +14,12 @@ class Question(models.Model):
         related_name="questions"
     )
 
-    code_relation = models.CharField(
-        "Código relacionado",
-        help_text="Código usado para identificar respostas relacionadas",
-        max_length=15
+    input_before = models.ForeignKey(
+        "self",
+        on_delete=models.PROTECT,
+        verbose_name="Pergunta anterior",
+        related_name="related_inputs",
+        null=True, blank=True
     )
 
     is_active = models.BooleanField(
@@ -27,8 +29,8 @@ class Question(models.Model):
     )
 
     body = models.CharField(
-        "Questão",
-        help_text="Enunciado da questão",
+        "Entrada",
+        help_text="Enunciado da entrada do usuário",
         max_length=500
     )
 
