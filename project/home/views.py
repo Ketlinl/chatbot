@@ -161,7 +161,7 @@ def nlk_process(request, protocol, code_before, question):
 
         # Captura do telefone, como CPF e número tem a mesma
         # quantidade de digitos (11) é bom diferencia-las.
-        if parts != cpf:
+        if len(document) == 11 and parts != document:
             # Todo número de telefone deve possuir o digito 9
             if '9' in parts:
                 # 13 - Telefone com o código brasileiro 55
