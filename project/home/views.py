@@ -7,6 +7,7 @@ from validate_docbr import CPF, CNPJ
 from unidecode import unidecode
 import buscacep
 import re as regex
+import os
 
 User = get_user_model()
 
@@ -16,7 +17,23 @@ def home(request):
     View de capturas de dados.
     """
 
-    return render(request, template_name="home.html")
+    env = os.environ.get("ENVIRONMENT", "development")
+
+    if env == "development":
+        host = "localhost:8000"
+    else:
+        host = "localhost"
+
+    user = User.objects.filter(is_superuser=True, is_staff=True).last()
+
+    return render(
+        request,
+        template_name="home.html",
+        context={
+            "host": host,
+            "protocol": user.protocol if user else ""
+        }
+    )
 
 
 def chatbot(request, protocol):
