@@ -18,7 +18,7 @@ function makeQuestion() {
   const $msg = document.getElementById("msg");
   const $protocol = document.getElementById("protocol");
   const $codeBefore = document.getElementById("code_before");
-  const protocol = Number($protocol.value);
+  const protocol = $protocol.value;
   const codeBefore = Number($codeBefore.value);
 
   // Remove o link para rolar o scroll para o final de forma automática
