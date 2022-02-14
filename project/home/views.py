@@ -241,7 +241,7 @@ def nlk_process(request, protocol, code_before, question):
                     "current_code": query.id,
                     "protocol": protocol,
                     "code_before": code_before,
-                    "question": query.question,
+                    "question": query.body,
                     "input": question,
                     "output": query.answer
                 })
