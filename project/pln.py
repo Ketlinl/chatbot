@@ -5,6 +5,7 @@ from .utils import zip_code_request
 from validate_docbr import CPF, CNPJ
 from unidecode import unidecode
 import re as regex
+import nltk
 import os
 
 User = get_user_model()
@@ -23,6 +24,11 @@ class PLN:
         self.input = current_input
         self.input_before_id = input_before_id
         self.protocol = protocol
+        # Usado para extrair o radical das palavras
+        self.stemmer = nltk.stem.RSLPStemmer()
+        # Stop words são palavras que não tem significado dentro de uma frase
+        # por exemplo, (e, do, o, com, ...)
+        self.stopwords = nltk.corpus.stopwords.words("portuguese")
 
     def __get_user_by_chatbot_protocol(self):
         """
@@ -204,16 +210,12 @@ class PLN:
         temp = temp.replace("dq", "de que")
         temp = temp.replace("td", "tudo")
         temp = temp.replace("pq", "porque")
+        temp = temp.replace("flw", "tchau")
+        temp = temp.replace("plv", "palavra")
+        temp = temp.replace("smp", "sempre")
+        temp = temp.replace("msm", "mesmo")
+        temp = temp.replace("obg", "obrigado")
 
-        return temp
-
-    def __remove_commom_expression(self, current_input):
-        """
-        Remove as expressões comuns que tem em quase todas as perguntas.
-        """
-
-        temp = current_input.replace(" que ", "")
-        temp = temp.replace("quem ", "")
         return temp
 
     def __populate_question_found(self, queryset):
@@ -249,18 +251,8 @@ class PLN:
         input_received = input_received.strip()
         input_received = input_received.lower()
 
-        # Elimina as 3 ultimas letras de cada palavra com tokenização
-        # para desconsiderar o tempo verbal de cada palavra
-        temp = input_received.split(" ")
-        temp_list = []
-        for x in temp:
-            if len(x) > 3:
-                temp_list.append(x[0:len(x)-3])
-            else:
-                temp_list.append(x)
-
-        input_received = ' '.join(temp_list)
-        return input_received
+        # Extrai o radical das palavras eliminando tempos verbais
+        return [str(self.stemmer.stem(word)) for word in input_received.split(" ") if word not in self.stopwords]
 
     def __answer_treatment(self, question):
         """
@@ -274,18 +266,8 @@ class PLN:
         question_found = question_found.strip()
         question_found = question_found.lower()
 
-        # Elimina as 3 ultimas letras de cada palavra com tokenização
-        # para desconsiderar o tempo verbal de cada palavra
-        temp = question_found.split(" ")
-        temp_list = []
-        for y in temp:
-            if len(y) > 3:
-                temp_list.append(y[0:len(y)-3])
-            else:
-                temp_list.append(y)
-
-        question_found = ' '.join(temp_list)
-        return question_found
+        # Extrai o radical das palavras eliminando tempos verbais
+        return [str(self.stemmer.stem(word)) for word in question_found.split(" ") if word not in self.stopwords]
 
     def get_result(self):
         """
@@ -336,7 +318,6 @@ class PLN:
             }
         else:
             current_input = self.__abbreviation_control(current_input)
-            # current_input = self.__remove_commom_expression(current_input)
             questions = self.__populate_question_found(queryset)
             if type(questions) == dict:
                 return questions
@@ -352,16 +333,11 @@ class PLN:
             for question in questions:
                 question_found = self.__answer_treatment(question)
                 print(f"Questão: {question_found}, Questão recebida {input_received}")
-                # Criar uma lista para a questão recebida e uma para a questão encontrada
-                question_received_list = input_received.split(" ")
-                print(question_received_list)
-                question_found_list = question_found.split(" ")
-                print(question_found_list)
                 # Conta as palavras recebidas que coincidem com as palavras de cada questão encontrada
                 # E armazenar o id da resposta com a maior quantidade de tokens semelhantes
                 qtd = 0
-                for _ in question_received_list:
-                    if _ in question_found_list:
+                for _ in input_received:
+                    if _ in question_found:
                         qtd += 1
 
                 print(f"qtd: {qtd}, equals: {equals}")

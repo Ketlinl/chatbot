@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from ..pln import PLN
+import nltk
 import os
 
 User = get_user_model()
@@ -35,6 +36,9 @@ def chatbot(request, protocol):
     """
     Abre a página do chatbot.
     """
+
+    nltk.download("stopwords")
+    nltk.download("rslp")
 
     return render(
         request,
