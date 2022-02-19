@@ -11,7 +11,7 @@ def zip_code_request(zip_code):
         try:
             response = requests.get(f"https://viacep.com.br/ws/{zip_code}/json/")
             response = response.json()
-        except:
+        except Exception:
             return None
 
         if response:

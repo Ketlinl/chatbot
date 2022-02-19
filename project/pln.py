@@ -24,6 +24,13 @@ class PLN:
         self.input = current_input
         self.input_before_id = input_before_id
         self.protocol = protocol
+        self.email = ""
+        self.name = ""
+        self.phone = ""
+        self.document = ""
+        self.sex = ""
+        self.age = 0
+        self.address = {}
         # Usado para extrair o radical das palavras
         self.stemmer = nltk.stem.RSLPStemmer()
         # Stop words são palavras que não tem significado dentro de uma frase
@@ -49,8 +56,7 @@ class PLN:
         pelo próprio caractere de espaço
         """
 
-        self.input = self.input.replace('%20', ' ')
-        return self.input.lower()
+        self.formated_input = self.input.lower().replace('%20', ' ')
 
     def __get_stored_sentences(self):
         """
@@ -61,7 +67,7 @@ class PLN:
         if self.input_before_id > 0:
             question = Question.objects.filter(id=self.input_before_id).last()
 
-        print(self.input_before_id, question)
+        print(f"Pergunta anterior: {self.input_before_id} - {question}")
         # Se existir uma pergunta anterior relacionada
         if question:
             # Pegue a questão que esteja relacionado a entrada anterior, caso exista.
@@ -70,7 +76,7 @@ class PLN:
                 input_before=question,
                 is_active=True
             )
-            print(queryset)
+            print(f"Lista de perguntas encontradas: {queryset}")
 
             # Caso não ache provavelmente é uma pergunta que não tem relação com as outras.
             if len(queryset) <= 0:
@@ -87,43 +93,37 @@ class PLN:
 
         return queryset
 
-    def __capture_age(self, current_input):
+    def __capture_age(self):
         """
         Captura da informação de idade
         """
 
-        age = 0
-        if 'anos' in current_input:
+        if 'anos' in self.formated_input:
             # Pega 8 caracteres antes da palavra anos para encapsular a idade
-            age = current_input[current_input.index('anos')-8:current_input.index('anos')]
+            self.age = self.formated_input[self.formated_input.index('anos')-8:self.formated_input.index('anos')]
             # Por regex extrai os número da frase encapsulada acima.
-            age = int(regex.sub('[^0-9]', '', age))
+            self.age = int(regex.sub('[^0-9]', '', self.age))
         else:
             # Caso não tenha passado o anos na resposta vamos quebrar a resposta em pedaços
-            tokens = current_input.split(' ')
+            tokens = self.formated_input.split(' ')
             # Percorrer esses pedaços
             for token in tokens:
                 # Por regex extrai o que tiver número
                 parts = regex.sub('[^0-9]', '', token)
                 # Se o número estiver entre 1 e 3 digitos então armazene
                 if len(parts) >= 1 and len(parts) <= 3:
-                    age = int(parts)
+                    self.age = int(parts)
 
-        return age
-
-    def __capture_sex(self, current_input):
+    def __capture_sex(self):
         """
         Captura da informação de sexo
         """
 
-        sex = ""
-        temp = current_input.replace(",", "").replace(".", "").replace(";", "").replace("!", "")
+        temp = self.formated_input.replace(",", "").replace(".", "").replace(";", "").replace("!", "")
         if " m " in temp or "masculino" in temp:
-            sex = "M"
+            self.sex = "M"
         elif " f " in temp or "feminino" in temp:
-            sex = "F"
-
-        return sex
+            self.sex = "F"
 
     def __capture_email_and_name(self, token):
         """
@@ -131,92 +131,79 @@ class PLN:
         e a partir do email o nome.
         """
 
-        email, name = "", ""
         if "@" in token and "." in token:
             email = token.strip()
             # Verifica se o usuário encerrou a sentença com um ponto final
             if email[-1] == '.':
                 email = email[0:-1]
             # Limpa o email de possíveis caracteres indesejados.
-            email = email.replace(',', '').replace(';', '').replace('!', '')
+            self.email = email.replace(',', '').replace(';', '').replace('!', '')
             # Pega o nome da pessoa a partir do email cadastrado
-            name = email.split("@")[0]
+            self.name = self.email.split("@")[0]
 
-        return email, name
-
-    def __capture_document(self, number, token):
+    def __capture_document(self, token):
         """
         Se for passado, captura a informação do documento
         do usuárion, CPF ou CNPJ.
         """
 
-        document = ""
         # Captura da informação de CPF
-        if len(number) == 11:
+        if len(token) == 11 and token.isnumeric():
             objCPF = CPF()
-            if objCPF.validade(number):
-                document = number.strip()
+            if objCPF.validate(token):
+                self.document = token.strip()
 
         # Captura da informação de CNPJ
-        if len(number) == 14:
+        if len(token) == 14 and token.isnumeric():
             objCNPJ = CNPJ()
-            if objCNPJ.validade(number):
-                document = number.strip()
+            if objCNPJ.validate(token):
+                self.document = token.strip()
 
-        return document
-
-    def __capture_phone(self, document, number, token):
+    def __capture_phone(self, token):
         """
         Captura as informações do telefone celular.
         """
 
-        phone = ""
         # Como CPF e número tem a mesma quantidade de digitos (11)
         # é bom diferencia-las.
-        number = regex.sub('[0-9]', '', token)
-        if len(document) == 11 and number != document:
+        if len(token) == 11 and token != self.document and token.isnumeric():
             # Todo número de telefone deve possuir o digito 9
-            if '9' in number:
+            if '9' in token:
                 # 13 - Telefone com o código brasileiro 55
                 # 11 - Telefone com o DDD e sem o código
                 # 9 - Telefone sem ambos
-                if len(number) in [13, 11, 9]:
-                    phone = number.strip()
+                if len(token) in [13, 11, 9]:
+                    self.phone = token.strip()
 
-        return phone
-
-    def __capture_address(self, number, token):
+    def __capture_address(self, token):
         """
         Captura o CEP e apartir dele pega os outros dados.
         """
 
-        address = {}
-        if len(number) == 8:
-            address = zip_code_request(number)
+        if len(token) == 8 and token.isnumeric():
+            self.address = zip_code_request(token)
 
-        return address
-
-    def __abbreviation_control(self, current_input):
+    def __abbreviation_control(self):
         """
         Controle de abreviações.
+        chatbot
         """
 
-        temp = current_input.replace("vc", "voce")
+        temp = self.formated_input.replace("vc", "voce")
         temp = temp.replace("vcs", "voces")
-        temp = temp.replace("eh", "e")
-        temp = temp.replace("tb", "tambem")
+        temp = temp.replace(" eh ", "e")
+        temp = temp.replace(" tb", "tambem")
         temp = temp.replace("tbm", "tambem")
-        temp = temp.replace("oq", "o que")
-        temp = temp.replace("dq", "de que")
-        temp = temp.replace("td", "tudo")
-        temp = temp.replace("pq", "porque")
+        temp = temp.replace("oq ", "o que")
+        temp = temp.replace("dq ", "de que")
+        temp = temp.replace(" td", "tudo")
+        temp = temp.replace("pq ", "porque")
         temp = temp.replace("flw", "tchau")
         temp = temp.replace("plv", "palavra")
         temp = temp.replace("smp", "sempre")
         temp = temp.replace("msm", "mesmo")
         temp = temp.replace("obg", "obrigado")
-
-        return temp
+        self.formated_input = temp
 
     def __populate_question_found(self, queryset):
         """
@@ -240,14 +227,14 @@ class PLN:
             "output": "Desculpe, essa informação eu não sei te responder ainda."
         }
 
-    def __input_treatment(self, current_input):
+    def __input_treatment(self):
         """
         Aqui será realizado um tratamento da pergunta que o usuário enviou.
         """
 
         # Remove acentuação e espaços, ponto de interrogação e coloca em minusculo.
-        input_received = unidecode(current_input)
-        input_received = input_received.replace("?", "")
+        input_received = unidecode(self.formated_input)
+        input_received = input_received.replace("?", "").replace(",", "").replace(".", "").replace(";", "").replace("!", "")
         input_received = input_received.strip()
         input_received = input_received.lower()
 
@@ -274,7 +261,7 @@ class PLN:
         Pega o resultado do processamento.
         """
 
-        print("############################")
+        print("#############################################################################")
 
         user = self.__get_user_by_chatbot_protocol()
         if not user:
@@ -283,46 +270,61 @@ class PLN:
                 "output": "Chatbot desativado, contate o administrador dele."
             }
 
-        print(self.input, self.input_before_id, self.protocol)
+        print(f"Protocolo: {self.protocol}, Pergunta: {self.input}, ID da pergunta relacionada: {self.input_before_id}")
 
-        current_input = self.__format_input()
+        self.__format_input()
         queryset = self.__get_stored_sentences()
-        age = self.__capture_age(current_input)
-        sex = self.__capture_sex(current_input)
-        tokens = current_input.split(" ")
+        self.__capture_age()
+        self.__capture_sex()
+        tokens = self.formated_input.split(" ")
         for token in tokens:
-            email, name = self.__capture_email_and_name(token)
-            number = regex.sub('[0-9]', '', token)
-            document = self.__capture_document(number, token)
-            phone = self.__capture_phone(document, number, token)
-            address = self.__capture_address(number, token)
+            self.__capture_email_and_name(token)
+            self.__capture_document(token)
+            self.__capture_phone(token)
+            self.__capture_address(token)
 
-        # print(age, sex, email, name, document, phone, number, address)
-
-        if any([age, sex, email, name, document, phone, address]):
-            print("ENTREIII CAPTURA")
-            capture = Capture.objects.create(
+        if any([self.age, self.sex, self.email, self.name, self.document, self.phone, self.address]):
+            capture, created = Capture.objects.get_or_create(
                 user=user,
-                age=age,
-                sex=sex,
-                email=email,
-                name=name.upper(),
-                document=document,
-                phone=phone,
-                **address
+                email=self.email,
+                defaults={
+                    "document": self.document,
+                    "age": self.age,
+                    "sex": self.sex,
+                    "name": self.name,
+                    "document": self.document,
+                    "phone": self.phone,
+                    **self.address
+                }
             )
+
+            if not created:
+                capture.email = self.email
+                capture.document = self.document
+                capture.age = self.age
+                capture.sex = self.sex
+                capture.name = self.name
+                capture.document = self.document
+                capture.phone = self.phone
+                capture.zip_code = self.address.get("zip_code", "")
+                capture.state = self.address.get("state", "")
+                capture.city = self.address.get("city", "")
+                capture.neighborhood = self.address.get("neighborhood", "")
+                capture.address = self.address.get("address", "")
+                capture.complement = self.address.get("complement", "")
+                capture.save()
 
             return {
                 "question_id": 0,
                 "output": "Anotado, muito obrigado."
             }
         else:
-            current_input = self.__abbreviation_control(current_input)
+            self.__abbreviation_control()
             questions = self.__populate_question_found(queryset)
             if type(questions) == dict:
                 return questions
 
-            input_received = self.__input_treatment(current_input)
+            input_received = self.__input_treatment()
 
             equals = 0
             result = {
@@ -349,6 +351,7 @@ class PLN:
                     result['output'] = question['output']
 
                 print(f"Resultado: {result}")
-            print("############################")
+
+            print("#############################################################################")
 
             return result

@@ -55,7 +55,7 @@ path := .
 
 flake8:
 	# Roda o flake8
-	docker-compose exec chatbot_test flake8 ./projects --count
+	docker-compose exec chatbot flake8 ./projects --count
 
 # DOCKER ---------------------------------------------------------
 
