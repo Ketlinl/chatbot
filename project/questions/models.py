@@ -17,7 +17,7 @@ class Question(models.Model):
     input_before = models.ForeignKey(
         "self",
         on_delete=models.PROTECT,
-        verbose_name="Pergunta anterior",
+        verbose_name="Pergunta > Resposta anterior",
         related_name="related_inputs",
         null=True, blank=True
     )
@@ -57,7 +57,7 @@ class Question(models.Model):
         Representação da modelo
         """
 
-        return self.body
+        return f"{self.body} > {self.answer}"
 
     class Meta:
         verbose_name = "Questão"
