@@ -4,7 +4,9 @@ from .captures.models import Capture
 from .utils import zip_code_request
 from validate_docbr import CPF, CNPJ
 from unidecode import unidecode
+import logging
 import re as regex
+import string
 import nltk
 import os
 
@@ -67,7 +69,7 @@ class PLN:
         if self.input_before_id > 0:
             question = Question.objects.filter(id=self.input_before_id).last()
 
-        print(f"Pergunta anterior: {self.input_before_id} - {question}")
+        logging.debug(f"Pergunta anterior: {self.input_before_id} - {question}")
         # Se existir uma pergunta anterior relacionada
         if question:
             # Pegue a questão que esteja relacionado a entrada anterior, caso exista.
@@ -76,7 +78,7 @@ class PLN:
                 input_before=question,
                 is_active=True
             )
-            print(f"Lista de perguntas encontradas: {queryset}")
+            logging.debug(f"Lista de perguntas encontradas: {queryset}")
 
             # Caso não ache provavelmente é uma pergunta que não tem relação com as outras.
             if len(queryset) <= 0:
@@ -119,7 +121,7 @@ class PLN:
         Captura da informação de sexo
         """
 
-        temp = self.formated_input.replace(",", "").replace(".", "").replace(";", "").replace("!", "")
+        temp = self.formated_input.translate(str.maketrans('', '', string.punctuation))
         if " m " in temp or "masculino" in temp:
             self.sex = "M"
         elif " f " in temp or "feminino" in temp:
@@ -137,7 +139,7 @@ class PLN:
             if email[-1] == '.':
                 email = email[0:-1]
             # Limpa o email de possíveis caracteres indesejados.
-            self.email = email.replace(',', '').replace(';', '').replace('!', '')
+            self.email = email.translate(str.maketrans('', '', string.punctuation))
             # Pega o nome da pessoa a partir do email cadastrado
             self.name = self.email.split("@")[0]
 
@@ -234,12 +236,12 @@ class PLN:
 
         # Remove acentuação e espaços, ponto de interrogação e coloca em minusculo.
         input_received = unidecode(self.formated_input)
-        input_received = input_received.replace("?", "").replace(",", "").replace(".", "").replace(";", "").replace("!", "")
+        input_received = input_received.translate(str.maketrans('', '', string.punctuation))
         input_received = input_received.strip()
         input_received = input_received.lower()
 
         # Extrai o radical das palavras eliminando tempos verbais
-        return [str(self.stemmer.stem(word)) for word in input_received.split(" ") if word not in self.stopwords]
+        return [str(self.stemmer.stem(word)) for word in input_received.split(" ") if word and word not in self.stopwords]
 
     def __answer_treatment(self, question):
         """
@@ -249,19 +251,19 @@ class PLN:
 
         # Remove acentuação e espaços, tira a ? e coloca em minusculo
         question_found = unidecode(question['input'])
-        question_found = question_found.replace("?", "")
+        question_found = question_found.translate(str.maketrans('', '', string.punctuation))
         question_found = question_found.strip()
         question_found = question_found.lower()
 
         # Extrai o radical das palavras eliminando tempos verbais
-        return [str(self.stemmer.stem(word)) for word in question_found.split(" ") if word not in self.stopwords]
+        return [str(self.stemmer.stem(word)) for word in question_found.split(" ") if word and word not in self.stopwords]
 
     def get_result(self):
         """
         Pega o resultado do processamento.
         """
 
-        print("#############################################################################")
+        logging.debug("#############################################################################")
 
         user = self.__get_user_by_chatbot_protocol()
         if not user:
@@ -270,7 +272,7 @@ class PLN:
                 "output": "Chatbot desativado, contate o administrador dele."
             }
 
-        print(f"Protocolo: {self.protocol}, Pergunta: {self.input}, ID da pergunta relacionada: {self.input_before_id}")
+        logging.debug(f"Protocolo: {self.protocol}, Pergunta: {self.input}, ID da pergunta relacionada: {self.input_before_id}")
 
         self.__format_input()
         queryset = self.__get_stored_sentences()
@@ -334,7 +336,7 @@ class PLN:
 
             for question in questions:
                 question_found = self.__answer_treatment(question)
-                print(f"Questão: {question_found}, Questão recebida {input_received}")
+                logging.debug(f"Questão: {question_found}, Questão recebida {input_received}")
                 # Conta as palavras recebidas que coincidem com as palavras de cada questão encontrada
                 # E armazenar o id da resposta com a maior quantidade de tokens semelhantes
                 qtd = 0
@@ -342,16 +344,16 @@ class PLN:
                     if _ in question_found:
                         qtd += 1
 
-                print(f"qtd: {qtd}, equals: {equals}")
+                logging.debug(f"qtd: {qtd}, equals: {equals}")
 
                 if qtd > 0 and qtd >= equals:
-                    print(f"ENTREI: {question}")
+                    logging.debug(f"ENTREI: {question}")
                     equals = qtd
                     result['question_id'] = question['question_id']
                     result['output'] = question['output']
 
-                print(f"Resultado: {result}")
+                logging.debug(f"Resultado: {result}")
 
-            print("#############################################################################")
+            logging.debug("#############################################################################")
 
             return result
