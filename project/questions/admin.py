@@ -37,5 +37,16 @@ class QuestionAdmin(admin.ModelAdmin):
         queryset = queryset.filter(user=request.user)
         return queryset
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """
+        Filtrar somente as questões do usuário.
+        """
+
+        if db_field.name == 'input_before':
+            queryset = kwargs.get('queryset', db_field.remote_field.model.objects)
+            kwargs['queryset'] = queryset.filter(user=request.user)
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 admin.site.register(Question, QuestionAdmin)
