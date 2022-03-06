@@ -20,7 +20,6 @@ function makeQuestion() {
   const $inputBefore = document.getElementById("input_before_id");
   const protocol = $protocol.value;
   const inputBeforeId = Number($inputBefore.value);
-  console.log(inputBeforeId);
 
   // Remove o link para rolar o scroll para o final de forma automática
   let msgLines = $msg.innerHTML;
@@ -37,7 +36,6 @@ function makeQuestion() {
     if (this.readyState == XMLHttpRequest.DONE && this.status === 200) {
       // Pega o objeto json da nossa view python
       let objJSON = JSON.parse(http.responseText);
-      console.log(objJSON);
       // Se existir conteudo pegue a pergunta (input) e a resposta (output) e insira no html do chatbot.
       if (objJSON) {
         const input = question;

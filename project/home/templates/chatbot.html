@@ -2,26 +2,31 @@
 {% load static %}
 {% block css %}
   <link rel="stylesheet" href="{% static 'css/balloons.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/chatbot.css' %}" />
 {% endblock %}
 {% block body %}
-  <nav class="navbar navbar-expand-sm bg-info">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a href="#" class="nav-link text-white">
-          <span class="dot"></span>&nbsp;Theo está online
-        </a>
-      </li>
-    </ul>
+  <nav class="chatbot__header">
+    <div class="chatbot__image--header">
+      <img src="{% static 'img/theo.png' %}" alt="image" />
+    </div>
+    <div class="chatbot__content--header">
+      <h4 class="chatbot__heading--header"> <span class="dot"></span>&nbsp;Theo online</h4>
+      <p class="chatbot__description--header">
+        Suporte 24 horas, tire suas dúvidas online de forma rápida
+      </p>
+    </div>
   </nav>
   <br />
-  <div>
-    <div style="overflow-y: scroll; height: 300px; width: 100%;" align="center" id="msg">
-      <div class="talk-bubble tri-right left-top" style="width: 90%; background-color: #00AABB;">
-        <div class="talktext">
-          <p>Olá! eu sou o chatbot Theo, em que posso ajudar?</p>
-        </div>
+  <div style="overflow-y: scroll; height: 300px; width: 100%;" align="center" id="msg">
+    <div class="talk-bubble tri-right left-top" style="width: 90%; background-color: #00AABB;">
+      <div class="talktext">
+        <p>Olá! eu sou o chatbot Theo, em que posso ajudar?</p>
       </div>
     </div>
+  </div>
+  <div class="chatbot__footer">
+    <img src="{% static 'icons/emojis.svg' %}" alt="" />
+    <img src="{% static 'icons/microphone.svg' %}" alt="" />
     <input
       type="text"
       id="input"
@@ -29,9 +34,12 @@
       onkeypress="return Send(event)"
       placeholder="Digite a sua mensagem e tecle Enter..."
     />
-    <input type="hidden" id="protocol" value="{{protocol}}" />
-    <input type="hidden" id="input_before_id" value="0" />
+    <p class="chatbot__send--footer" onclick="makeQuestion()">Enviar</p>
+
+    <img src="{% static 'icons/attachment.svg' %}" alt="" />
   </div>
+  <input type="hidden" id="protocol" value="{{protocol}}" />
+  <input type="hidden" id="input_before_id" value="0" />
 {% endblock %}
 {% block js %}
   <script src="{% static 'js/chatbot.js' %}"></script>
