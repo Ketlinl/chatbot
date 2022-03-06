@@ -42,16 +42,12 @@ function makeQuestion() {
         $inputBefore.value = objJSON.question_id;
         const output = objJSON.output.toString().trim();
         msgLines += `
-          <div class="talk-bubble tri-right right-top" style="width: 90%; background-color: #8000FF;">
-            <div class="talktext">
-              <p>${input}</p>
-            </div>
+          <div class="messages__item messages__item--operator">
+            ${input}
           </div>
 
-          <div class="talk-bubble tri-right left-top" style="width: 90%; background-color: #00AABB;">
-            <div class="talktext">
-              <p>${output}</p>
-            </div>
+          <div class="messages__item messages__item--visitor">
+            ${output}
           </div>
 
           <a href="#" id="end">

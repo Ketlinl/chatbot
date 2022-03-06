@@ -39,10 +39,49 @@ body {
   margin-bottom: 0;
 }
 
+/* Messages */
+.chatbot__messages {
+  padding: 0 20px;
+  overflow-y: scroll;
+  height: 300px;
+  width: 100%;
+}
+
+.messages__item {
+  margin-top: 10px;
+  background: #E0E0E0;
+  max-width: 70%;
+  padding: 1em;
+  text-align: left;
+  line-height: 1.5em;
+  max-width: 60.6%;
+  width: fit-content;
+}
+
+.messages__item--visitor,
+.messages__item--typing {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+
+.messages__item--visitor {
+  margin-right: auto;
+  margin-bottom: 10px;
+}
+
+.messages__item--operator {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  margin-bottom: 10px;
+  background: #581B98;
+  color: white;
+  margin-left: auto;
+}
+
 /* FOOTER */
 .chatbot__footer {
-  position: sticky;
-  bottom: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
