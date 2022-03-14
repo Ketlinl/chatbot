@@ -101,20 +101,33 @@ class PLN:
         """
 
         if 'anos' in self.formated_input:
-            # Pega 8 caracteres antes da palavra anos para encapsular a idade
-            self.age = self.formated_input[self.formated_input.index('anos')-8:self.formated_input.index('anos')]
+            # Pega 4 caracteres antes da palavra anos para encapsular a idade
+            self.age = self.formated_input[self.formated_input.index('anos')-4:self.formated_input.index('anos')]
+            # Por regex extrai os número da frase encapsulada acima.
+            self.age = int(regex.sub('[^0-9]', '', self.age))
+        elif "idade" in self.formated_input:
+            # Pega 4 caracteres após a palavra idade para encapsular a idade
+            self.age = self.formated_input[self.formated_input.index('idade'):self.formated_input.index('idade')+9]
             # Por regex extrai os número da frase encapsulada acima.
             self.age = int(regex.sub('[^0-9]', '', self.age))
         else:
             # Caso não tenha passado o anos na resposta vamos quebrar a resposta em pedaços
             tokens = self.formated_input.split(' ')
             # Percorrer esses pedaços
+            phone = ""
             for token in tokens:
                 # Por regex extrai o que tiver número
                 parts = regex.sub('[^0-9]', '', token)
+
+                # Não confundir com o DDD
+                if len(phone) in [13, 11, 9] and '9' in phone:
+                    self.age = 0
+
                 # Se o número estiver entre 1 e 3 digitos então armazene
                 if len(parts) >= 1 and len(parts) <= 3:
                     self.age = int(parts)
+
+                phone = parts
 
     def __capture_sex(self):
         """
@@ -139,7 +152,7 @@ class PLN:
             if email[-1] == '.':
                 email = email[0:-1]
             # Limpa o email de possíveis caracteres indesejados.
-            self.email = email.translate(str.maketrans('', '', string.punctuation))
+            self.email = email.replace(',', '').replace(';', '').replace('!', '')
             # Pega o nome da pessoa a partir do email cadastrado
             self.name = self.email.split("@")[0]
 
@@ -149,14 +162,16 @@ class PLN:
         do usuárion, CPF ou CNPJ.
         """
 
+        token = regex.sub('[^0-9]', '', token)
+
         # Captura da informação de CPF
-        if len(token) == 11 and token.isnumeric():
+        if len(token) == 11:
             objCPF = CPF()
             if objCPF.validate(token):
                 self.document = token.strip()
 
         # Captura da informação de CNPJ
-        if len(token) == 14 and token.isnumeric():
+        if len(token) == 14:
             objCNPJ = CNPJ()
             if objCNPJ.validate(token):
                 self.document = token.strip()
@@ -166,23 +181,24 @@ class PLN:
         Captura as informações do telefone celular.
         """
 
-        # Como CPF e número tem a mesma quantidade de digitos (11)
-        # é bom diferencia-las.
-        if len(token) == 11 and token != self.document and token.isnumeric():
-            # Todo número de telefone deve possuir o digito 9
-            if '9' in token:
-                # 13 - Telefone com o código brasileiro 55
-                # 11 - Telefone com o DDD e sem o código
-                # 9 - Telefone sem ambos
-                if len(token) in [13, 11, 9]:
-                    self.phone = token.strip()
+        # 13 - Telefone com o código brasileiro 55
+        # 11 - Telefone com o DDD e sem o código
+        # 9 - Telefone sem ambos
+        token = regex.sub('[^0-9]', '', token)
+        if len(token) in [13, 11, 9] and '9' in token:
+            # Como CPF e número tem a mesma quantidade de digitos (11)
+            # é bom diferencia-las.
+            if token != self.document:
+                self.phone = token.strip()
 
     def __capture_address(self, token):
         """
         Captura o CEP e apartir dele pega os outros dados.
         """
 
-        if len(token) == 8 and token.isnumeric():
+        token = regex.sub('[^0-9]', '', token)
+
+        if len(token) == 8:
             self.address = zip_code_request(token)
 
     def __abbreviation_control(self):
