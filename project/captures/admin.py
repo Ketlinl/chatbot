@@ -30,7 +30,7 @@ class CaptureAdmin(admin.ModelAdmin):
         Salva a modelo no banco de dados.
         """
 
-        obj.user = request.user
+        obj.chatbot = request.user.chatbot
 
         address = zip_code_request(obj.zip_code)
 
@@ -58,7 +58,7 @@ class CaptureAdmin(admin.ModelAdmin):
         """
 
         queryset = super().get_queryset(request)
-        queryset = queryset.filter(user=request.user)
+        queryset = queryset.filter(chatbot__user=request.user)
         return queryset
 
 admin.site.register(Capture, CaptureAdmin)

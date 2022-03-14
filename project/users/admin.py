@@ -2,6 +2,7 @@ from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin, UserAdmin as
 from django.contrib.auth.models import Group
 from django.contrib import admin
 from django.db.models import Q
+from project.home.models import Chatbot
 from .forms import UserCreationForm, UserForm
 from .models import User
 import random
@@ -42,7 +43,7 @@ class UserAdmin(BaseUserAdmin):
 
     add_fieldsets = ((None, {'fields': ('email', 'name', 'password1', 'password2')}),)
 
-    list_display = ('name', 'email', 'protocol', 'is_active', 'is_staff', 'is_superuser', 'created_at')
+    list_display = ('name', 'email', 'chatbot', 'is_active', 'is_staff', 'is_superuser', 'created_at')
 
     search_fields = ('name', 'email')
 
@@ -79,8 +80,13 @@ class UserAdmin(BaseUserAdmin):
         Salva a modelo no banco de dados.
         """
 
-        obj.protocol = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        if not obj.chatbot_id:
+            protocol = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            chatbot = Chatbot.objects.create(protocol=protocol)
+            obj.chatbot = chatbot
+
         obj.is_staff = True
+
         super().save_model(request, obj, form, change)
 
     def get_ordering(self, request):

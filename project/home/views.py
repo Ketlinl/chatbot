@@ -27,7 +27,7 @@ def home(request):
         template_name="home.html",
         context={
             "host": host,
-            "protocol": user.protocol if user else ""
+            "protocol": user.chatbot.protocol if user else ""
         }
     )
 

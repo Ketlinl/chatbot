@@ -1,5 +1,5 @@
 from django.db import models
-from project.users.models import User
+from project.home.models import Chatbot
 
 
 class Question(models.Model):
@@ -7,10 +7,10 @@ class Question(models.Model):
     Cadastra as perguntas e respostas
     """
 
-    user = models.ForeignKey(
-        User,
+    chatbot = models.ForeignKey(
+        Chatbot,
         on_delete=models.CASCADE,
-        verbose_name='Usuário',
+        verbose_name='Chatbot',
         related_name="questions"
     )
 

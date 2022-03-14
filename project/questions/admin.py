@@ -25,7 +25,7 @@ class QuestionAdmin(admin.ModelAdmin):
         Salva a modelo no banco de dados.
         """
 
-        obj.user = request.user
+        obj.chatbot = request.user.chatbot
         super().save_model(request, obj, form, change)
 
     def get_queryset(self, request):
@@ -34,7 +34,7 @@ class QuestionAdmin(admin.ModelAdmin):
         """
 
         queryset = super().get_queryset(request)
-        queryset = queryset.filter(user=request.user)
+        queryset = queryset.filter(chatbot__user=request.user)
         return queryset
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -44,7 +44,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
         if db_field.name == 'input_before':
             queryset = kwargs.get('queryset', db_field.remote_field.model.objects)
-            kwargs['queryset'] = queryset.filter(user=request.user)
+            kwargs['queryset'] = queryset.filter(chatbot__user=request.user)
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

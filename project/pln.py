@@ -45,7 +45,7 @@ class PLN:
         """
 
         try:
-            user = User.objects.get(protocol=self.protocol)
+            user = User.objects.get(chatbot__protocol=self.protocol)
         except User.DoesNotExist:
             return None
 
@@ -74,7 +74,7 @@ class PLN:
         if question:
             # Pegue a questão que esteja relacionado a entrada anterior, caso exista.
             queryset = Question.objects.filter(
-                user__protocol=self.protocol,
+                chatbot__protocol=self.protocol,
                 input_before=question,
                 is_active=True
             )
@@ -83,13 +83,13 @@ class PLN:
             # Caso não ache provavelmente é uma pergunta que não tem relação com as outras.
             if len(queryset) <= 0:
                 queryset = Question.objects.filter(
-                    user__protocol=self.protocol,
+                    chatbot__protocol=self.protocol,
                     is_active=True
                 )
         # Caso seja uma nova pergunta
         else:
             queryset = Question.objects.filter(
-                user__protocol=self.protocol,
+                chatbot__protocol=self.protocol,
                 is_active=True
             )
 
@@ -287,7 +287,7 @@ class PLN:
 
         if any([self.age, self.sex, self.email, self.name, self.document, self.phone, self.address]):
             capture, created = Capture.objects.get_or_create(
-                user=user,
+                chatbot=user.chatbot,
                 email=self.email,
                 defaults={
                     "document": self.document,
