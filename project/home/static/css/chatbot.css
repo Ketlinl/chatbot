@@ -16,7 +16,7 @@ body {
 
 /* HEADER */
 .chatbot__header {
-  background: linear-gradient(93.12deg, #581B98 0.52%, #9C1DE7 100%);
+  background: linear-gradient(93.12deg, #3D49EE 0.52%, #979DEE 100%);
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
@@ -85,7 +85,7 @@ body {
   border-top-right-radius: 20px;
   border-bottom-left-radius: 20px;
   margin-bottom: 10px;
-  background: #581B98;
+  background: #3D49EE;
   color: white;
   margin-left: auto;
 }
@@ -100,7 +100,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 20px 20px;
-  background: linear-gradient(268.91deg, #581B98 -2.14%, #9C1DE7 99.69%);
+  background: linear-gradient(268.91deg, #3D49EE -2.14%, #979DEE 99.69%);
   box-shadow: 0px -10px 15px rgba(0, 0, 0, 0.1);
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
