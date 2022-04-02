@@ -1,6 +1,10 @@
+import email
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.http import JsonResponse
+from project.users.forms import UserCreationForm
 from ..pln import PLN
 import nltk
 import os
@@ -55,3 +59,26 @@ def nlk_process(request, protocol, input_before_id, current_input):
 
     result = PLN(protocol, input_before_id, current_input).get_result()
     return JsonResponse(result, safe=False)
+
+
+def create_ong(request):
+    """
+    Mostra o formulário de criação da ONG.
+    """
+
+    form = UserCreationForm(request.POST, None)
+
+    group = Group.objects.last()
+
+    if form.is_valid():
+        data = form.cleaned_data
+        user = User.objects.create_user(
+            data['email'],
+            data['name'],
+            data['password1']
+        )
+        user.groups.add(group)
+
+        return HttpResponseRedirect('/admin/')
+
+    return render(request, 'form.html', {"form": form})

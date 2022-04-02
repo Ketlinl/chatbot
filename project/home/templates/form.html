@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Cadastro{% endblock %}
+{% block body %}
+  <div class="container">
+    <h1>Cadastro ONG</h1>
+    <form action="{% url 'create-ong' %}" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button class="btn btn-primary" type="submit">Criar</button>
+    </form>
+  </div>
+{% endblock %}
