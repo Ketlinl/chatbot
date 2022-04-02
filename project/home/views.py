@@ -66,19 +66,21 @@ def create_ong(request):
     Mostra o formulário de criação da ONG.
     """
 
-    form = UserCreationForm(request.POST, None)
+    form = UserCreationForm()
 
-    group = Group.objects.last()
-
-    if form.is_valid():
-        data = form.cleaned_data
-        user = User.objects.create_user(
-            data['email'],
-            data['name'],
-            data['password1']
-        )
-        user.groups.add(group)
-
-        return HttpResponseRedirect('/admin/')
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        group = Group.objects.last()
+        if form.is_valid():
+            data = form.cleaned_data
+            user = User.objects.create_user(
+                data['email'],
+                data['name'],
+                data['password1']
+            )
+            user.groups.add(group)
+            return HttpResponseRedirect('/admin/')
+        else:
+            return render(request, 'form.html', {"form": form})
 
     return render(request, 'form.html', {"form": form})
