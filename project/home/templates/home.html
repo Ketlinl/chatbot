@@ -1,25 +1,421 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/lineicons.css' %}" />
+<link rel="stylesheet" href="{% static 'css/animate.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+{% endblock %}
 {% block body %}
-  <div class="container">
-    <h1>Home</h1>
-    <p>Sua página inicial aqui!</p>
-    <a href="#" onclick="window.open('http://{{host}}/chatbot/{{protocol}}/', 'chatbot', 'width=400,height=489');">
-      Chatbot
-    </a>
-    <br />
-    <a href="/admin/">Admin</a>
-    <br />
-    <a href="/ong/cadastro/">Cadastro</a>
-    <h2>API de Integração</h2>
-    <p>
-      Copie e cole o código abaixo dentro da tag body do seu aplicativo WEB e substitua o
-      protocolo pelo protocolo do seu usuário cadastrado.
-    </p>
-    <textarea class="form-control" rows="10" spellcheck="false" readonly>
-      <a href="#" onclick="window.open('http://{{host}}/chatbot/<protocolo>/', 'chatbot', 'width=400,height=489');">
-        Chatbot
-      </a>
-    </textarea>
+  <div class="preloader">
+    <div class="loader">
+      <div class="spinner">
+        <div class="spinner-container">
+          <div class="spinner-rotator">
+            <div class="spinner-left">
+              <div class="spinner-circle"></div>
+            </div>
+            <div class="spinner-right">
+              <div class="spinner-circle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <header class="header">
+    <div class="navbar-area">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-12">
+            <nav class="navbar navbar-expand-lg">
+              <a class="navbar-brand">
+                <img src="{% static 'img/logo.png' %}" alt="Logo" />
+              </a>
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+              </button>
+
+              <div
+                class="collapse navbar-collapse sub-menu-bar"
+                id="navbarSupportedContent"
+              >
+                <ul id="nav" class="navbar-nav ms-auto">
+                  <li class="nav-item">
+                    <a class="page-scroll active" href="#home">Início</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="page-scroll" href="#features">Funcionalidades</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="page-scroll" href="#about">Integração</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="page-scroll" href="#why">Benefícios</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" onclick="window.open('http://{{host}}/chatbot/{{protocol}}/', 'chatbot', 'width=400,height=489');">
+                      Chatbot
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/admin/" style="padding: 1px 18px !important;border: 2px solid #fff;margin-top: 5px;" class="main-btn btn-hover border-btn wow fadeInUp"
+                    data-wow-delay=".6s">Acesse sua conta</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="home" class="hero-section">
+    <div class="container">
+      <div class="row align-items-center position-relative">
+        <div class="col-lg-6">
+          <div class="hero-content">
+            <h1 class="wow fadeInUp" data-wow-delay=".4s">
+              Crie seu chatbot e integre ao seu sistema
+            </h1>
+            <p class="wow fadeInUp" data-wow-delay=".6s">
+              Se você cuida ou gerencia uma ONG o chatbot é pra você. É simples e rápido e o melhor, é de graça.
+            </p>
+            <a
+              href="/ong/cadastro/"
+              class="main-btn border-btn btn-hover wow fadeInUp"
+              data-wow-delay=".6s"
+              >Cadastre-se</a
+            >
+            <a href="#features" class="scroll-bottom">
+              <i class="lni lni-arrow-down"></i
+            ></a>
+          </div>
+        </div>
+        <div class="col-lg-6">
+
+          <div class=" wow fadeInUp" data-wow-delay=".5s">
+            <img src="{% static 'img/chat.png' %}" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="feature-section pt-120">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-8 col-sm-10">
+          <div class="single-feature">
+            <div class="icon">
+              <i class="lni lni-grid-alt"></i>
+            </div>
+            <div class="content">
+              <h3>Fácil Integração</h3>
+              <p>
+                Chatbot simples e de fácil integração podendo ser feito em poucos minutos
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-8 col-sm-10">
+          <div class="single-feature">
+            <div class="icon">
+              <i class="lni lni-layout"></i>
+            </div>
+            <div class="content">
+              <h3>Informações Personalizadas</h3>
+              <p>
+                Você que gerencia e cria as informações do Chatbot no sistema
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-8 col-sm-10">
+          <div class="single-feature">
+            <div class="icon">
+              <i class="lni lni-rocket"></i>
+            </div>
+            <div class="content">
+              <h3>Respostas Rápidas</h3>
+              <p>
+                Disponibilize um atendimento ágil e assertivo para as pessoas que utilizarem seu sistema
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about-section pt-150">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-xl-6 col-lg-6">
+          <div class="about-img">
+            <img src="{% static 'img/2.PNG' %}" alt="" class="w-100" />
+            <img
+              src="{% static 'img/about-left-shape.svg' %}"
+              alt=""
+              class="shape shape-1"
+            />
+            <img
+              src="{% static 'img/left-dots.svg' %}"
+              alt=""
+              class="shape shape-2"
+            />
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6">
+          <div class="about-content">
+            <div class="section-title mb-30">
+              <h2 class="mb-25 wow fadeInUp" data-wow-delay=".2s">
+                Crie um Chatbot para seu negócio
+              </h2>
+              <p class="wow fadeInUp" data-wow-delay=".4s">
+                O Chatbot Theo utiliza a tecnologia PLN — Processamento de Linguagem Natural
+                que permite uma comunicação mais humanizada, como se estivesse conversando com um amigo.
+              </p>
+            </div>
+            <ul>
+              <li>Cadastre-se</li>
+              <li>Acesse o Painel Administrativo</li>
+              <li>Cadastre as informações</li>
+              <li>Integre o chatbot em seu site</li>
+            </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about-section pt-150">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-xl-6 col-lg-6">
+          <div class="about-content">
+            <div class="section-title mb-30">
+              <h2 class="mb-25 wow fadeInUp" data-wow-delay=".2s">
+                Veja como é simples integrar o Chatbot em seu sistema
+              </h2>
+              <p class="wow fadeInUp" data-wow-delay=".4s">
+                Copie e cole o código abaixo dentro da tag body do seu aplicativo WEB e
+                substitua o protocolo pelo protocolo do seu usuário cadastrado.
+              </p>
+              <br>
+
+              <textarea class="wow fadeInUp form-control" data-wow-delay=".4s" style="opacity: 1;background-color: #e9ecef;"><a href="#" onclick="window.open('http://{{host}}/chatbot/{{protocol}}/', 'chatbot', 'width=400,height=489');">Chatbot</a></textarea>
+              <br>
+              <p class="wow fadeInUp" data-wow-delay=".4s">
+                Pronto, agora o chatbot vai estar integrado ao seu sistema.
+                Viu como é simples e rápido.
+              </p>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 order-first order-lg-last">
+          <div class="about-img-2">
+            <!--class="w-100"--->
+            <img src="{% static 'img/chat.png' %}" alt=""  />
+            <img
+              src="{% static 'img/about-right-shape.svg' %}"
+              alt=""
+              class="shape shape-1"
+            />
+            <img
+              src="{% static 'img/right-dots.svg' %}"
+              alt=""
+              class="shape shape-2"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why" class="feature-extended-section pt-100">
+    <div class="feature-extended-wrapper">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-xxl-5 col-xl-6 col-lg-8 col-md-9">
+            <div class="section-title text-center mb-60">
+              <h2 class="mb-25 wow fadeInUp" data-wow-delay=".2s">
+                Confira todos os benefícios
+              </h2>
+              <p class="wow fadeInUp" data-wow-delay=".4s">
+                Explore todas as possibilidades para transformar a
+                experiência de atendimento das pessoas.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <div class="single-feature-extended">
+              <div class="icon">
+                <i class="lni lni-display"></i>
+              </div>
+              <div class="content">
+                <h3>Gerenciamento de informações facilitado</h3>
+                <p>
+                  Todas as informações em um mesmo lugar facilitando o processo
+
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="single-feature-extended">
+              <div class="icon">
+                <i class="lni lni-leaf"></i>
+              </div>
+              <div class="content">
+                <h3>Informações valiosas para tomar as decisões certas</h3>
+                <p>
+                  Analise os dados coletados pelo Chatbot através da
+                  plataforma
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="single-feature-extended">
+              <div class="icon">
+                <i class="lni lni-grid-alt"></i>
+              </div>
+              <div class="content">
+                <h3>Atendimento humano mais estratégico</h3>
+                <p>
+                  Resolva as questões mais simples pelo chatbot e deixe o
+                  atendimento humano responsável pelos atendimentos mais complexas.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="single-feature-extended">
+              <div class="icon">
+                <i class="lni lni-layout"></i>
+              </div>
+              <div class="content">
+                <h3>Fácil acesso</h3>
+                <p>
+                  É muito simples, é só realizar o cadastro e acessar o
+                  sistema para adicionar informações.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="single-feature-extended">
+              <div class="icon">
+                <i class="lni lni-layers"></i>
+              </div>
+              <div class="content">
+                <h3>Reduza Custos</h3>
+                <p>
+                  O sistema é gratuito, sem custos para você ou para sua organização.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="single-feature-extended">
+              <div class="icon">
+                <i class="lni lni-coffee-cup"></i>
+              </div>
+              <div class="content">
+                <h3>Atendimento 24 horas</h3>
+                <p>
+                  Com o Chatbot, é possível oferecer atendimentos em qualquer
+                  hora do dia, em qualquer dia da semana.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="widget-wrapper">
+        <div class="row">
+          <div class="col-xl-4 col-lg-4 col-md-6">
+            <div class="footer-widget">
+              <div class="logo mb-30">
+                <a href="index.html">
+                  <img src="{% static 'img/logo.png' %}" alt="" />
+                </a>
+              </div>
+              <p class="desc mb-30 text-white">
+              Nós acreditamos no poder das mensagens e suas soluções
+              criando experiências únicas de atendimento através dos chatbots.
+              </p>
+            </div>
+          </div>
+
+          <div class="col-xl-2 col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <h3>Sobre Nós</h3>
+              <ul class="links text-white">
+                <li><a class="page-scroll active" href="#home">Início</a></li>
+                <li><a class="page-scroll" href="#features">Funcionalidades</a></li>
+                <li><a class="page-scroll" href="#about">Integração</a></li>
+                <li><a class="page-scroll" href="#why">Benefícios</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <h3>Funcionalidades</h3>
+              <ul class="links text-white">
+                <li>Fácil Integração</li>
+                <li>Informações Personalizadas</li>
+                <li>Respostas Rápidas</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <h3>Outros Produtos</h3>
+              <ul class="links">
+                <li>
+                  <a href="#" onclick="window.open('http://{{host}}/chatbot/{{protocol}}/', 'chatbot', 'width=400,height=489');">
+                    Chatbot
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="scroll-top btn-hover">
+    <i class="lni lni-chevron-up"></i>
+  </a>
+{% endblock %}
+{% block js %}
+  <script src="{% static 'js/main.js' %}"></script>
 {% endblock %}
